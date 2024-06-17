@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: 'my-site-api'
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: 'postgres'
+    url: 'jdbc:postgresql://localhost:5432/mysite'
+    password: 'teste12'
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: 'update'
+
+jwt:
+  secret: '3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b'
+  exp: 86400000

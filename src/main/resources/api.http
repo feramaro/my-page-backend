@@ -1,0 +1,22 @@
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "name" : "Luis",
+  "email" : "jrferamaro@gmail.com",
+  "password" : "teste123"
+}
+###
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email" : "jrferamaro@gmail.com",
+  "password" : "teste123"
+}
+
+###
+
+GET http://localhost:8080/
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqcmZlcmFtYXJvQGdtYWlsLmNvbSIsImlhdCI6MTcxODYzODYyOSwiZXhwIjoxNzE4NzI1MDI5fQ.HKP_INBBtyFMu1cy9szzcKgwQQH9I7tJGM4E84JJPQQ
