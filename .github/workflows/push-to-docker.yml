@@ -31,7 +31,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: 'Push image'
         run: |
-          docker push am4r0/mysite:${{ steps.generate_sha.outputs.sha }}
+          docker push am4r0/mysite:${{ steps.generate_sha.outputs.sha }} .
           docker tag am4r0/mysite:${{ steps.generate_sha.outputs.sha }} am4r0/mysite:latest
           docker push am4r0/mysite:latest
           
