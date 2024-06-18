@@ -34,13 +34,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 'Build Docker image'
+      - name: 'Build and Push Docker image'
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/arm64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} .
-          docker buildx build --platform linux/arm64 -t am4r0/mysite:latest .
-
-      - name: 'Push image'
-        run: |
-          docker buildx build --platform linux/arm64 --push -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} .
-          docker buildx build --platform linux/arm64 --push -t am4r0/mysite:latest .
+          docker buildx build --platform linux/arm64,linux/amd64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --push .
+          docker tag am4r0/mysite:${{ steps.generate_sha.outputs.sha }} am4r0/mysite:latest
+          docker push am4r0/mysite:latest
