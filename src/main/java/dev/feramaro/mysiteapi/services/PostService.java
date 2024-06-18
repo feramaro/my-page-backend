@@ -21,10 +21,11 @@ public class PostService {
         Post post = new Post();
         post.setTitle(createPostDTO.title());
         post.setText(createPostDTO.text());
-        post.setImage(post.getImage());
+        post.setImage(createPostDTO.image());
         post = postRepository.save(post);
 
         return new PostDTO(post.getId(), post.getTitle(), post.getText(), post.getImage());
+
     }
 
     public PostsDTO getAllPosts() {

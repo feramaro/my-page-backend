@@ -47,7 +47,7 @@ public class AuthenticationController {
                 .httpOnly(true)
                 .secure(false)
                 .maxAge(-1000)
-                .path("/p")
+                .path("/")
                 .build();
 
         return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
