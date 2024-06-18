@@ -34,16 +34,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 'Build and Push Docker image'
+      - name: 'Build and Push Docker image with SHA tag'
         run: |
           docker buildx create --use
           docker buildx build --platform linux/arm64,linux/amd64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --push .
 
-      - name: 'Load Docker image locally'
+      - name: 'Create and Push Docker manifest for latest'
         run: |
-          docker buildx build --platform linux/amd64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --load .
-
-      - name: 'Tag and Push latest'
-        run: |
-          docker tag am4r0/mysite:${{ steps.generate_sha.outputs.sha }} am4r0/mysite:latest
-          docker push am4r0/mysite:latest
+          docker manifest create am4r0/mysite:latest \
+            --amend am4r0/mysite:${{ steps.generate_sha.outputs.sha }}-amd64 \
+            --amend am4r0/mysite:${{ steps.generate_sha.outputs.sha }}-arm64
+          docker manifest push am4r0/mysite:latest
