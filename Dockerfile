@@ -4,7 +4,7 @@ COPY src /app/src
 COPY pom.xml /app
 
 WORKDIR /app
-RUN mvn clean install -DskipTests
+RUN mvn clean install -DskipTests -Pprod
 
 FROM --platform=linux/arm64 eclipse-temurin:21-jre-alpine
 
