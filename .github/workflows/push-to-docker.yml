@@ -14,7 +14,7 @@ jobs:
       - name: 'Checkout'
         uses: actions/checkout@v4
 
-      - name: 'Generate SHA'
+      - name: 'Generate sha'
         id: generate_sha
         run: |
           SHA=$(echo $GITHUB_SHA | head -c7)
@@ -34,12 +34,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 'Build and Push Docker image for arm64 with SHA tag'
+      - name: 'Build and Push Docker image'
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/arm64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --push .
+          docker buildx build --platform linux/arm64,linux/amd64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --push .
 
-      - name: 'Tag Docker image as latest for arm64'
+      - name: 'Load Docker image locally'
+        run: |
+          docker buildx build --platform linux/arm64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --load .
+
+      - name: 'Tag and Push latest'
         run: |
           docker tag am4r0/mysite:${{ steps.generate_sha.outputs.sha }} am4r0/mysite:latest
           docker push am4r0/mysite:latest
