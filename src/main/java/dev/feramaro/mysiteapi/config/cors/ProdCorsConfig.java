@@ -7,19 +7,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @Profile("prod")
 public class ProdCorsConfig {
 
-    @Value("${cors.origin-url}")
-    private String corsOrigin;
+    @Value("${cors.origin-urls}")
+    private List<String> originUrls;
 
 
     @Bean
     public CorsConfiguration corsConfiguration() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Collections.singletonList(corsOrigin));
+        config.setAllowedOrigins(originUrls);
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         config.setAllowCredentials(true);

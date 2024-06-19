@@ -20,4 +20,7 @@ jwt:
 
 cors:
   use-https: true
-  origin-url: 'https://feramaro.netlify.app'
+  origin-urls:
+    - 'https://feramaro.xyz/'
+    - 'https://www.feramaro.xyz/'
+    - 'https://feramaro.netlify.app/'
