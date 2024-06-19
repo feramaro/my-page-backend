@@ -3,11 +3,10 @@ package dev.feramaro.mysiteapi.controllers;
 import dev.feramaro.mysiteapi.dto.common.ResponseDTO;
 import dev.feramaro.mysiteapi.dto.user.LoginDTO;
 import dev.feramaro.mysiteapi.dto.user.RegisterDTO;
-import dev.feramaro.mysiteapi.dto.user.TokenDTO;
 import dev.feramaro.mysiteapi.models.User;
 import dev.feramaro.mysiteapi.services.AuthenticationService;
 import dev.feramaro.mysiteapi.services.JwtService;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +14,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
 public class AuthenticationController {
+
+    @Value("${cors.use-https}")
+    private boolean useHttps;
 
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
+
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
+        this.jwtService = jwtService;
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody RegisterDTO registerDTO) {
@@ -33,7 +39,7 @@ public class AuthenticationController {
         String token = jwtService.generateToken(authUser);
         ResponseCookie cookie = ResponseCookie.from("Authorization", token)
                 .httpOnly(true)
-                .secure(false)
+                .secure(useHttps)
                 .maxAge(24 * 60 * 60)
                 .path("/")
                 .build();
@@ -45,7 +51,7 @@ public class AuthenticationController {
     public ResponseEntity<Void> logOut() {
         ResponseCookie cookie = ResponseCookie.from("Authorization", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(useHttps)
                 .maxAge(-1000)
                 .path("/")
                 .build();

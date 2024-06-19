@@ -12,10 +12,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+
+    public PostService(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
 
     public PostDTO newPost(CreatePostDTO createPostDTO) {
         Post post = new Post();

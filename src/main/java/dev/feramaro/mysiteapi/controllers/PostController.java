@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/post")
-@AllArgsConstructor
 public class PostController {
 
     private final PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     @GetMapping
     public ResponseEntity<PostsDTO> getAllPosts() {

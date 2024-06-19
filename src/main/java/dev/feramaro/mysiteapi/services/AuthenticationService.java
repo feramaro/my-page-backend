@@ -11,13 +11,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class AuthenticationService {
+
+
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+
+    public AuthenticationService(UserRepository repository, PasswordEncoder passwordEncoder,
+                                 AuthenticationManager authenticationManager,
+                                 UserRepository userRepository) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+    }
 
     public User signUp(RegisterDTO dto) {
         User user = new User();

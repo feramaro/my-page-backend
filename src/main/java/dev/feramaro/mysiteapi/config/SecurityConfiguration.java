@@ -19,12 +19,18 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
     private final CorsConfiguration corsConfiguration;
+
+    public SecurityConfiguration(AuthenticationProvider authenticationProvider,
+                                 JwtAuthFilter jwtAuthFilter, CorsConfiguration corsConfiguration) {
+        this.authenticationProvider = authenticationProvider;
+        this.jwtAuthFilter = jwtAuthFilter;
+        this.corsConfiguration = corsConfiguration;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
