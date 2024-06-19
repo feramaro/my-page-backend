@@ -21,3 +21,4 @@ jwt:
 
 cors:
   use-https: false
+  origin-urls: 'http://localhost:8080'
