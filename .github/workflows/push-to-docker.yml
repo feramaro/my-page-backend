@@ -37,8 +37,7 @@ jobs:
       - name: 'Build and Push Docker image with SHA tag'
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/arm64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }}-arm64 --push .
-          docker buildx build --platform linux/amd64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }}-amd64 --push . 
+          docker buildx build --platform linux/arm64,linux/amd64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --push .
 
       - name: 'Create and Push Docker manifest for latest'
         run: |
