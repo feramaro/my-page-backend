@@ -34,14 +34,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 'Build and Push Docker image with SHA tag'
+      - name: 'Build and Push Docker image for arm64 with SHA tag'
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/arm64,linux/amd64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --push .
+          docker buildx build --platform linux/arm64 -t am4r0/mysite:${{ steps.generate_sha.outputs.sha }} --push .
 
-      - name: 'Create and Push Docker manifest for latest'
+      - name: 'Tag Docker image as latest for arm64'
         run: |
-          docker manifest create am4r0/mysite:latest \
-            --amend am4r0/mysite:${{ steps.generate_sha.outputs.sha }}-amd64 \
-            --amend am4r0/mysite:${{ steps.generate_sha.outputs.sha }}-arm64
-          docker manifest push am4r0/mysite:latest
+          docker tag am4r0/mysite:${{ steps.generate_sha.outputs.sha }} am4r0/mysite:latest
+          docker push am4r0/mysite:latest
