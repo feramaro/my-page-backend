@@ -42,7 +42,7 @@ public class AuthenticationController {
                 .secure(useHttps)
                 .maxAge(24 * 60 * 60)
                 .path("/")
-                .sameSite("Lax")
+                .sameSite("None")
                 .build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new ResponseDTO(200, "Login successfully!"));
