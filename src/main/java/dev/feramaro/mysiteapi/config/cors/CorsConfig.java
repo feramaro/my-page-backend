@@ -1,5 +1,6 @@
 package dev.feramaro.mysiteapi.config.cors;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,32 +13,20 @@ import java.util.Collections;
 import java.util.List;
 
 @Configuration
-public class CorsConfig {
+public class CorsConfig implements CorsConfigurationSource {
 
     @Value("#{'${cors.origin-urls}'.split(',')}")
     private List<String> originUrls;
 
-    @Bean
-    public CorsConfiguration corsConfiguration() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(originUrls);
-        config.setAllowedMethods(Collections.singletonList("*"));
-        config.setAllowedHeaders(Collections.singletonList("*"));
-        config.setAllowCredentials(true);
-        return config;
+    @Override
+    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedOriginPatterns(originUrls);
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT", "OPTIONS", "PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of("Authorization", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+        return corsConfiguration;
     }
 
-    @Bean
-    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(originUrls);
-        config.setAllowedMethods(List.of("*"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        return source;
-    }
 }

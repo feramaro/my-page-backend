@@ -25,21 +25,18 @@ public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
-    private final CorsConfiguration corsConfiguration;
     private final CorsConfigurationSource corsConfigurationSource;
 
-    public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtAuthFilter jwtAuthFilter, CorsConfiguration corsConfiguration, CorsConfigurationSource corsConfigurationSource) {
+    public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtAuthFilter jwtAuthFilter,
+                                 CorsConfigurationSource corsConfigurationSource) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthFilter = jwtAuthFilter;
-        this.corsConfiguration = corsConfiguration;
         this.corsConfigurationSource = corsConfigurationSource;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((auth) -> {
+        http.authorizeHttpRequests((auth) -> {
                     auth
                             .requestMatchers("/auth/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/post").permitAll()
@@ -48,6 +45,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS
                 ));
