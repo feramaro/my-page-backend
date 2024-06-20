@@ -1,32 +1,32 @@
 package dev.feramaro.mysiteapi.config.cors;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
-public class CorsConfig implements CorsConfigurationSource {
+public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("#{'${cors.origin-urls}'.split(',')}")
+    @Value("${cors.origin-urls}")
     private List<String> originUrls;
 
+
     @Override
-    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-        corsConfiguration.setAllowedOriginPatterns(originUrls);
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT", "OPTIONS", "PATCH", "DELETE"));
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setExposedHeaders(List.of("Authorization", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
-        return corsConfiguration;
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(originUrls.toArray(new String[0]))
+                .allowedMethods(HttpMethod.GET.name(),
+                        HttpMethod.POST.name(),
+                        HttpMethod.PUT.name(),
+                        HttpMethod.DELETE.name())
+                .allowedHeaders(HttpHeaders.CONTENT_TYPE,
+                        HttpHeaders.AUTHORIZATION);
     }
+
 
 }
