@@ -1,7 +1,9 @@
 package dev.feramaro.mysiteapi.config;
 
 import dev.feramaro.mysiteapi.config.middlewares.JwtAuthFilter;
+import dev.feramaro.mysiteapi.config.middlewares.OriginFilter;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,19 +24,19 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthFilter jwtAuthFilter;
+    private final OriginFilter originFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
 
-    public SecurityConfiguration(AuthenticationProvider authenticationProvider, JwtAuthFilter jwtAuthFilter) {
-        this.authenticationProvider = authenticationProvider;
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((auth) -> {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource)).
+                authorizeHttpRequests((auth) -> {
                     auth
                             .requestMatchers("/auth/**").permitAll()
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -42,6 +44,7 @@ public class SecurityConfiguration {
                             .anyRequest().authenticated();
                 })
                 .authenticationProvider(authenticationProvider)
+                .addFilterBefore(originFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(
